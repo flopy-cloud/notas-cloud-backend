@@ -12,6 +12,8 @@ def lambda_handler(event, context):
         return crear_nota(event)
     elif metodo == 'GET':
         return listar_notas()
+    elif metodo == 'DELETE':
+        return borrar_nota(event)
     else:
         return respuesta(400, {'error': 'Metodo no soportado'})
 
@@ -32,6 +34,18 @@ def crear_nota(event):
 def listar_notas():
     resultado = tabla.scan()
     return respuesta(200, resultado.get('Items', []))
+
+
+def borrar_nota(event):
+    params = event.get('queryStringParameters') or {}
+    nota_id = params.get('id')
+    
+    if not nota_id:
+        return respuesta(400, {'error': 'Falta el id de la nota'})
+    
+    tabla.delete_item(Key={'NotaId': nota_id})
+    
+    return respuesta(200, {'mensaje': 'Nota eliminada', 'id': nota_id})  
 
 
 def respuesta(codigo, cuerpo):
