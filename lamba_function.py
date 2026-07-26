@@ -14,8 +14,10 @@ def lambda_handler(event, context):
         return listar_notas()
     elif metodo == 'DELETE':
         return borrar_nota(event)
+    elif metodo == 'PUT':
+        return editar_nota(event)
     else:
-        return respuesta(400, {'error': 'Metodo no soportado'})
+        return respuesta(400, {'error': 'Metodo no soportado'})  
 
 
 def crear_nota(event):
@@ -45,7 +47,28 @@ def borrar_nota(event):
     
     tabla.delete_item(Key={'NotaId': nota_id})
     
-    return respuesta(200, {'mensaje': 'Nota eliminada', 'id': nota_id})  
+    return respuesta(200, {'mensaje': 'Nota eliminada', 'id': nota_id}) 
+
+
+def editar_nota(event):
+    params = event.get('queryStringParameters') or {}
+    nota_id = params.get('id')
+    
+    if not nota_id:
+        return respuesta(400, {'error': 'Falta el id de la nota'})
+    
+    body = json.loads(event['body'])
+    
+    tabla.update_item(
+        Key={'NotaId': nota_id},
+        UpdateExpression='SET Titulo = :t, Contenido = :c',
+        ExpressionAttributeValues={
+            ':t': body.get('titulo', ''),
+            ':c': body.get('contenido', '')
+        }
+    )
+    
+    return respuesta(200, {'mensaje': 'Nota actualizada', 'id': nota_id})
 
 
 def respuesta(codigo, cuerpo):
