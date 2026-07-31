@@ -6,7 +6,7 @@ dynamodb = boto3.resource('dynamodb')
 tabla = dynamodb.Table('NotasCloud')
 
 def lambda_handler(event, context):
-    metodo = event.get('httpMethod', 'GET')
+    metodo = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
     
     if metodo == 'POST':
         return crear_nota(event)
@@ -16,6 +16,8 @@ def lambda_handler(event, context):
         return borrar_nota(event)
     elif metodo == 'PUT':
         return editar_nota(event)
+    elif metodo == 'OPTIONS':
+        return respuesta(200, {})    
     else:
         return respuesta(400, {'error': 'Metodo no soportado'})  
 
@@ -26,8 +28,8 @@ def crear_nota(event):
     
     tabla.put_item(Item={
         'NotaId': nota_id,
-        'Titulo': body.get('titulo', ''),
-        'Contenido': body.get('contenido', '')
+        'Titulo': body.get('Titulo', ''),
+        'Contenido': body.get('Contenido', '')
     })
     
     return respuesta(201, {'mensaje': 'Nota creada', 'id': nota_id})

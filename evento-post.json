@@ -1,0 +1,4 @@
+{
+  "httpMethod": "POST",
+  "body": "{\"titulo\": \"Mi primera nota cloud\", \"contenido\": \"Funciona!\"}"
+}
