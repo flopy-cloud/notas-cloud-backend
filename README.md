@@ -8,6 +8,8 @@ Backend serverless para una app de notas, usando AWS Lambda y DynamoDB.
 - AWS Lambda: procesa la logica (crear y listar notas)
 - DynamoDB: almacena las notas
 
+![Arquitectura de Notas Cloud](arquitectura.png)
+
 ## Funciones
 
 - POST -> crea una nota nueva
