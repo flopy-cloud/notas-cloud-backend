@@ -1,4 +1,4 @@
-# CI/CD probado con GitHub Actions
+# CI/CD funcionando correctamente
 import json
 import boto3
 import uuid
